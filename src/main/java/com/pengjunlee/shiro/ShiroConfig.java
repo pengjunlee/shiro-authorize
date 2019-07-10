@@ -125,9 +125,23 @@ public class ShiroConfig {
 		loginRealm.setCredentialsMatcher(credentialsMatcher);
 		return loginRealm;
 	}
+	
+	/**
+	 * Realm2 配置，需实现 Realm 接口
+	 */
+	@Bean
+	UserRealm userRealm() {
+		UserRealm userRealm = new UserRealm();
+		// 设置加密算法
+		HashedCredentialsMatcher credentialsMatcher = new HashedCredentialsMatcher("SHA-1");
+		// 设置加密次数
+		credentialsMatcher.setHashIterations(16);
+		userRealm.setCredentialsMatcher(credentialsMatcher);
+		return userRealm;
+	}
 
 	/**
-	 * 第一步 创建 SessionDAO 的同时设置其 SessionIdGenerator 属性
+	 * 使用 Session 第一步 创建 SessionDAO 的同时设置其 SessionIdGenerator 属性
 	 */
 	@Bean
 	public SessionDAO sessionDAO() {
@@ -142,7 +156,7 @@ public class ShiroConfig {
 	}
 
 	/**
-	 * 第二步 创建 SessionManager 的同时设置其 SessionDAO 属性
+	 * 使用 Session 第二步 创建 SessionManager 的同时设置其 SessionDAO 属性
 	 */
 	@Bean
 	public DefaultSessionManager sessionManager() {
@@ -155,7 +169,7 @@ public class ShiroConfig {
 	}
 
 	/**
-	 * 第一步 创建 SimpleCookie
+	 * 使用 Cookie 第一步 创建 SimpleCookie
 	 */
 	@Bean
 	public SimpleCookie simpleCookie() {
@@ -168,7 +182,7 @@ public class ShiroConfig {
 	}
 
 	/**
-	 * 第二步 创建 CookieRememberMeManager 的同时设置其 Cookie 属性
+	 * 使用 Cookie 第二步 创建 CookieRememberMeManager 的同时设置其 Cookie 属性
 	 */
 	@Bean
 	public CookieRememberMeManager cookieRememberMeManager() {
@@ -179,7 +193,7 @@ public class ShiroConfig {
 	}
 
 	/**
-	 * 第三步 创建 SecurityManager 的同时设置其 CookieRememberMeManager 属性
+	 * 使用 Cookie 第三步 创建 SecurityManager 的同时设置其 CookieRememberMeManager 属性
 	 */
 	@Bean
 	public SecurityManager securityManager() {
@@ -194,6 +208,7 @@ public class ShiroConfig {
 		// 3.Realm
 		List<Realm> realms = new ArrayList<Realm>(16);
 		realms.add(loginRealm());
+		realms.add(userRealm());
 		securityManager.setRealms(realms);
 
 		// 4.SessionManager
